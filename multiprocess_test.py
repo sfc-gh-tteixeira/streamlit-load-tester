@@ -3,12 +3,15 @@ import util
 
 def run_test(
         num_users,
+        user_arrival_style,
         num_stuff_to_draw,
         computation,
         num_multiplications,
         sleep_time_between_multiplications,
         write_to_file,
     ):
+    """Run tasks using Python's multiprocessing.Process().
+    """
 
     processes = []
 
@@ -16,18 +19,20 @@ def run_test(
         process = multiprocessing.Process(
             target=util.run_test,
             kwargs=dict(
-                experiment_name='python-multiprocess',
-                write_func=print,
+                experiment_name="python-multiprocess",
+                user_index=i,
+                num_users=num_users,
+                user_arrival_style=user_arrival_style,
                 num_stuff_to_draw=num_stuff_to_draw,
                 computation=computation,
                 num_multiplications=num_multiplications,
                 sleep_time_between_multiplications=sleep_time_between_multiplications,
                 thread_pool_limits=1,
-                num_users=num_users,
-                user_index=i,
                 write_to_file=write_to_file,
             ),
         )
+        util.sleep_between_users(user_arrival_style, num_users, i)
+
         process.start()
         processes.append(process)
 
