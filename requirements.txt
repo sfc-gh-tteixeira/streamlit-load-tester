@@ -1,0 +1,7 @@
+altair
+numpy
+pandas
+playwright
+ray
+streamlit
+threadpoolctl
