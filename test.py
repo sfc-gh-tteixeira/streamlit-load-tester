@@ -14,7 +14,7 @@ USER_ARRIVAL_STYLE = ["together", "spread_out"]
 NUM_STUFF_TO_DRAW = [100]
 NUM_MULTIPLICATIONS = [1, 10, 100, 1000]
 SLEEP_TIME_BETWEEN_MULTIPLICATIONS = [0, 0.001, 0.01]
-WRITE_TO_FILE = f"test_results_{util.now()}.rowjson"
+WRITE_TO_FILE = f"data/test_results_{util.now()}.rowjson"
 
 TESTS_TO_RUN = [
     processpool_test.run_test,

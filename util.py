@@ -1,6 +1,7 @@
 import contextlib
 import datetime
 import json
+import pathlib
 import random
 import time
 
@@ -130,6 +131,9 @@ def run_test(
         )
 
 def save_results(filename, **kwargs):
+    # Make the folder filename lives in, if needed.
+    pathlib.Path(filename).parent.mkdir(parents=True, exist_ok=True)
+
     with open(filename, "a") as f:
         f.write(json.dumps(kwargs))
         f.write("\n")

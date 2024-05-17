@@ -27,7 +27,7 @@ def read_data(filenames):
 # :heart_on_fire: Load test results browser
 """
 
-files = sorted(glob.glob("*.rowjson"))
+files = sorted(glob.glob("data/*.rowjson"))
 filenames = st.multiselect("Pick files", files, default=files[-1])
 data = None
 
@@ -89,7 +89,12 @@ if data is not None:
         )
 
         st.altair_chart(
+            # Little ticks for each individual experiment.
             c.mark_point(size=50, shape="stroke", opacity=0.33, strokeWidth=1).encode(y="session_run_time:Q") +
+
+            # Lines going through the median points.
             c.mark_line().encode(y="median(session_run_time):Q") +
+
+            # Points on top of the lines, showing the median.
             c.mark_point(size=50, filled=True).encode(y="median(session_run_time):Q", shape=alt.Shape("experiment_name:N", legend=None)),
         use_container_width=True)
