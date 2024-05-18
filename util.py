@@ -23,21 +23,18 @@ def no_context_manager():
 
 
 def sleep_between_users(user_arrival_style, num_users, user_number):
-    sleep_time = 0
-
     if user_number == 0:
-        sleep_time = 0
+        return
 
     elif user_arrival_style == "together":
-        sleep_time = 0
+        return
 
     elif user_arrival_style == "spread_out":
         sleep_time = 1.0 / num_users
+        time.sleep(sleep_time)
 
     else:
         raise ValueError(f"Illegal {user_arrival_style=}")
-
-    time.sleep(sleep_time)
 
 def multiply_matrices(num_multiplications, sleep_time_between_multiplications, thread_pool_limits):
     if thread_pool_limits < 1:
