@@ -75,10 +75,7 @@ AnnotationKey = collections.namedtuple(
 
 
 def runtime_x_users(id, comparison_mode=False):
-    all_experiment_names = data.experiment_name.unique().tolist()
-    all_num_multiplications = data.num_multiplications.unique().tolist()
-    all_sleep_times = data.sleep_time_between_multiplications.unique().tolist()
-    all_arrival_styles = data.user_arrival_style.unique().tolist()
+    """Shows line charts of runtime vs num users, with many controls."""
 
     """
     ## Session run time vs. number of users
@@ -144,9 +141,9 @@ def runtime_x_users(id, comparison_mode=False):
                 filtered_data_1,
                 height=300,
             ).encode(
-                x=alt.X("num_users:Q", title="Number of users"),
-                y=alt.Y("median(session_run_time):Q", title=f"Session run time ({run_time_units})"),
-                color=alt.Color(
+                alt.X("num_users:Q", title="Number of users"),
+                alt.Y("median(session_run_time):Q", title=f"Session run time ({run_time_units})"),
+                alt.Color(
                     "experiment_name:N",
                     title=None,
                     legend=alt.Legend(
@@ -160,8 +157,9 @@ def runtime_x_users(id, comparison_mode=False):
 
             st.altair_chart(
                 # Little ticks for each individual experiment.
-                c.mark_point(size=50, shape="stroke", opacity=0.33, strokeWidth=1).encode(
-                    y="session_run_time:Q",
+                c.mark_point(size=50, filled=True, opacity=0.125).encode(
+                    alt.Y("session_run_time:Q"),
+                    #alt.XOffset("user_index:Q"),  # Not working for some reason. Same with random jitter.
                 ) +
 
                 # Lines going through the median points.
@@ -169,7 +167,7 @@ def runtime_x_users(id, comparison_mode=False):
 
                 # Points on top of the lines, showing the median.
                 c.mark_point(size=50, filled=True).encode(
-                    shape=alt.Shape("experiment_name:N", legend=None),
+                    alt.Shape("experiment_name:N", legend=None),
                 ),
             use_container_width=True)
 
@@ -197,29 +195,25 @@ def runtime_x_users(id, comparison_mode=False):
                     ""
 
 def runtime_shootout(id, comparison_mode):
-    all_num_users = data.num_users.unique().tolist()
-    all_experiment_names = data.experiment_name.unique().tolist()
-    all_num_multiplications = data.num_multiplications.unique().tolist()
-    all_sleep_times = data.sleep_time_between_multiplications.unique().tolist()
-    all_arrival_styles = data.user_arrival_style.unique().tolist()
+    """Shows runtime bar charts, with many controls."""
 
     selected_num_multiplications = st.radio(
         "Number of multiplications, in millions (i.e. how complex are your app's calculations?)",
-        ["include all", *sorted(all_num_multiplications)],
+        sorted(all_num_multiplications),
         horizontal=True,
         key=f"mult-{id}",
     )
 
     selected_arrival_style = st.radio(
         "How do users arrive",
-        ["include all", *sorted(all_arrival_styles, reverse=True)],
+        sorted(all_arrival_styles, reverse=True),
         horizontal=True,
         key=f"style-{id}",
     )
 
     selected_sleep_time = st.radio(
         "Sleep time between every million multiplications (seconds)",
-        ["include all", *sorted(all_sleep_times)],
+        sorted(all_sleep_times),
         horizontal=True,
         key=f"sleep-{id}",
     )
@@ -229,29 +223,28 @@ def runtime_shootout(id, comparison_mode):
 
     filtered_data_0 = data
 
-    if selected_num_multiplications != "include all":
-        filtered_data_0 = filtered_data_0[
-            filtered_data_0.num_multiplications == selected_num_multiplications]
-
-    if selected_arrival_style != "include all":
-        filtered_data_0 = filtered_data_0[
-            filtered_data_0.user_arrival_style == selected_arrival_style]
-
-    if selected_sleep_time != "include all":
-        filtered_data_0 = filtered_data_0[
-            filtered_data_0.sleep_time_between_multiplications == selected_sleep_time]
+    filtered_data_0 = filtered_data_0[
+        (filtered_data_0.num_multiplications == selected_num_multiplications) &
+        (filtered_data_0.user_arrival_style == selected_arrival_style) &
+        (filtered_data_0.sleep_time_between_multiplications == selected_sleep_time)
+    ]
 
     for curr_num_users in all_num_users:
-        f"### {curr_num_users} concurrent users"
+        f"### {curr_num_users} concurrent user{ 's' if curr_num_users > 1 else '' }"
 
         filtered_data_1 = filtered_data_0[filtered_data_0.num_users == curr_num_users]
-        #filtered_data_1.session_run_time /= filtered_data_1.session_run_time.min()
+
+        c = alt.Chart(filtered_data_1, height=40 * len(all_experiment_names)).encode(
+            alt.Y("experiment_name:N", title=None),
+            alt.Color("experiment_name:N", legend=None),
+        )
 
         st.altair_chart(
-            alt.Chart(filtered_data_1).mark_bar().encode(
-                x=alt.X("median(session_run_time):Q", title="Median run time (s)"),
-                y=alt.Y("experiment_name:N", title=None),
-                color=alt.Y("experiment_name:N", legend=None),
+            c.mark_bar(opacity=0.667).encode(
+                alt.X("median(session_run_time):Q", title="Median run time (s)"),
+            ) + c.mark_point(filled=True, size=20, opacity=0.75).encode(
+                alt.X("session_run_time:Q"),
+                alt.YOffset("user_index:Q"),
             ),
             use_container_width=True,
         )
@@ -275,6 +268,12 @@ with col:
     if filenames:
         data = read_data(filenames)
         annotations = read_annotations(filenames)
+
+        all_num_users = data.num_users.unique().tolist()
+        all_experiment_names = data.experiment_name.unique().tolist()
+        all_num_multiplications = data.num_multiplications.unique().tolist()
+        all_sleep_times = data.sleep_time_between_multiplications.unique().tolist()
+        all_arrival_styles = data.user_arrival_style.unique().tolist()
 
     analysis_types = {
         "Session run time vs. number of users": runtime_x_users,
