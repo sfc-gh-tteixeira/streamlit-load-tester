@@ -21,16 +21,18 @@ TESTS_TO_RUN = [
     streamlit_test.run_base_test,
     streamlit_test.run_processpool_test,
     threads_test.run_test,
-    multiprocess_test.run_test,
+    # Commenting this out because it provides basically the same results
+    # as processpool_test, and just makes charts harder to read.
+    # multiprocess_test.run_test,
 ]
 
 if __name__ == "__main__":
     for computation in COMPUTATION:
-        for num_multiplications in NUM_MULTIPLICATIONS:
-            for num_users in NUM_USERS:
-                for user_arrival_style in USER_ARRIVAL_STYLE:
-                    for num_stuff_to_draw in NUM_STUFF_TO_DRAW:
-                        for sleep_time_between_multiplications in SLEEP_TIME_BETWEEN_MULTIPLICATIONS:
+        for sleep_time_between_multiplications in SLEEP_TIME_BETWEEN_MULTIPLICATIONS:
+            for num_multiplications in NUM_MULTIPLICATIONS:
+                for num_users in NUM_USERS:
+                    for user_arrival_style in USER_ARRIVAL_STYLE:
+                        for num_stuff_to_draw in NUM_STUFF_TO_DRAW:
                             for test_fn in random.sample(TESTS_TO_RUN, k=len(TESTS_TO_RUN)):
                                 print(textwrap.dedent(f"""
                                     Running test:
