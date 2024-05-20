@@ -256,7 +256,9 @@ def runtime_shootout(id, comparison_mode):
         st.altair_chart(
             c.mark_bar(opacity=0.667).encode(
                 alt.X("median(session_run_time):Q", title="Median run time (s)"),
-            ) + c.mark_point(filled=True, size=20, opacity=0.75).encode(
+            ) +
+
+            c.mark_point(size=20, filled=True, opacity=0.5).encode(
                 alt.X("session_run_time:Q"),
                 alt.YOffset("user_index:Q"),
             ),
