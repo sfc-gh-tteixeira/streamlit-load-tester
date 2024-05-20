@@ -145,8 +145,9 @@ def runtime_x_users(id, comparison_mode=False):
                 alt.Y("median(session_run_time):Q", title=f"Session run time ({run_time_units})"),
                 alt.Color(
                     "experiment_name:N",
-                    title=None,
+                    title="Experiment name",
                     legend=alt.Legend(
+                        title=None,
                         orient="top-left",
                         symbolType="stroke",
                         symbolOpacity=1,
@@ -167,7 +168,7 @@ def runtime_x_users(id, comparison_mode=False):
 
                 # Points on top of the lines, showing the median.
                 c.mark_point(size=50, filled=True).encode(
-                    alt.Shape("experiment_name:N", legend=None),
+                    alt.Shape("experiment_name:N", title="Experiment name", legend=None),
                 ),
             use_container_width=True)
 
@@ -249,8 +250,11 @@ def runtime_shootout(id, comparison_mode):
         filtered_data_1 = filtered_data_0[filtered_data_0.num_users == curr_num_users]
 
         c = alt.Chart(filtered_data_1, height=40 * len(all_experiment_names)).encode(
-            alt.Y("experiment_name:N", title=None, **sort_args),
-            alt.Color("experiment_name:N", legend=None),
+            alt.Y(
+                "experiment_name:N",
+                title="Experiment name",
+                **sort_args).axis(title=None),
+            alt.Color("experiment_name:N", title="Experiment name", legend=None),
         )
 
         st.altair_chart(
@@ -292,8 +296,8 @@ with col:
         all_arrival_styles = data.user_arrival_style.unique().tolist()
 
     analysis_types = {
-        "Session run time vs. number of users": runtime_x_users,
         "Runtime shootout": runtime_shootout,
+        "Session run time vs. number of users": runtime_x_users,
     }
 
     analysis_type = analysis_types[st.selectbox("Analysis type", analysis_types.keys())]
