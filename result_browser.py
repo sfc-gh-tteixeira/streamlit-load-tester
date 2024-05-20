@@ -221,6 +221,15 @@ def runtime_shootout(id, comparison_mode):
     ""
     ""
 
+    sort_by_winner = st.toggle(
+        "Sort by winner",
+        True,
+        key=f"sort-{id}",
+    )
+
+    ""
+    ""
+
     filtered_data_0 = data
 
     filtered_data_0 = filtered_data_0[
@@ -229,13 +238,18 @@ def runtime_shootout(id, comparison_mode):
         (filtered_data_0.sleep_time_between_multiplications == selected_sleep_time)
     ]
 
+    if sort_by_winner:
+        sort_args = dict(sort="x")
+    else:
+        sort_args = {}
+
     for curr_num_users in all_num_users:
         f"### {curr_num_users} concurrent user{ 's' if curr_num_users > 1 else '' }"
 
         filtered_data_1 = filtered_data_0[filtered_data_0.num_users == curr_num_users]
 
         c = alt.Chart(filtered_data_1, height=40 * len(all_experiment_names)).encode(
-            alt.Y("experiment_name:N", title=None),
+            alt.Y("experiment_name:N", title=None, **sort_args),
             alt.Color("experiment_name:N", legend=None),
         )
 
