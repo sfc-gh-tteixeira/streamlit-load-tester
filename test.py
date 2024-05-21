@@ -1,3 +1,17 @@
+# Copyright (c) Snowflake Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import textwrap
 import random
 
@@ -25,6 +39,26 @@ TESTS_TO_RUN = [
     # as processpool_test, and just makes charts harder to read.
     # multiprocess_test.run_test,
 ]
+
+
+COMPUTATION = ["multiply_numbers"]
+# COMPUTATION = ["multiply_matrices"]
+# NUM_USERS = [2]
+# USER_ARRIVAL_STYLE = ["spread_out"]
+# USER_ARRIVAL_STYLE = ["together"]
+# NUM_STUFF_TO_DRAW = [100]
+# NUM_MULTIPLICATIONS = [10]
+SLEEP_TIME_BETWEEN_MULTIPLICATIONS = [0.001, 0.01]
+# WRITE_TO_FILE = False
+
+TESTS_TO_RUN = [
+    streamlit_test.run_base_test,
+    streamlit_test.run_processpool_test,
+    processpool_test.run_test,
+    threads_test.run_test,
+    # multiprocess_test.run_test,
+]
+
 
 if __name__ == "__main__":
     for computation in COMPUTATION:
