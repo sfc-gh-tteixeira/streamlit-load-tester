@@ -95,7 +95,7 @@
     "num_multiplications": 1,
     "sleep_time_between_multiplications": 0,
     "num_users": 1,
-    "annotation": "Python beats Streamlit, but in terms of absolute numbers and user perception everything is more or less equally fast: the range is 90ms vs 59ms, so differences are barely noticeable."
+    "annotation": "Python beats Streamlit, but in terms of absolute numbers and user perception everything is more or less equally fast: the range is 59-90ms, so differences are barely noticeable."
   },
 
   {
@@ -139,7 +139,7 @@
     "num_multiplications": 1,
     "sleep_time_between_multiplications": 0,
     "num_users": 25,
-    "annotation": "Streamlit tends to win out vs the matching Python experiment, again, I'll chalk it out to the potential testing artifact mentioned earlier. It's also interesting to note how the variance in the Python-threads experiment is super large."
+    "annotation": "Same as above. Although here it's also interesting how large the variance in the Python-threads experiment is."
   },
 
   {
@@ -150,7 +150,7 @@
     "num_multiplications": 1,
     "sleep_time_between_multiplications": 0,
     "num_users": 50,
-    "annotation": "it tends to win out vs the matching Python experiment, again, I'll chalk it out to the potential testing artifact mentioned earlier. It's also interesting to note how the variance in the Python-threads experiment is super large."
+    "annotation": "Same as above."
   },
 
   {
@@ -161,7 +161,7 @@
     "num_multiplications": 1,
     "sleep_time_between_multiplications": 0,
     "num_users": 1,
-    "annotation": "Python beats Streamlit, but in terms of absolute numbers and user perception everything is more or less equally fast: the range is 79ms vs 58ms, so differences are barely noticeable."
+    "annotation": "Python beats Streamlit, but in terms of absolute numbers and user perception everything is more or less equally fast: the range is 58-79ms, so differences are barely noticeable."
   },
 
   {
@@ -217,5 +217,71 @@
     "sleep_time_between_multiplications": 0,
     "num_users": 50,
     "annotation": "Streamlit continues to take the lead. I still feel like this should be due to some testing artifact. So let's just say it's a tie."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 10,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 1,
+    "annotation": "Python-threads beats Streamlit, but in terms of absolute numbers and user perception everything is more or less equally fast: the range is 58-64ms, so differences are barely noticeable."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 10,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 2,
+    "annotation": "At 2 concurrent users and 10M multiplications each it becomes a good idea to do the multiplications in a separate process. You'll see this trend only grow below. However, note how Streamlit and Python are about the same."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 10,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 5,
+    "annotation": "Same as above. And notice how the difference between threaded and processpool versions is further increasing now."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 10,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 10,
+    "annotation": "Same as above, though here Python-threads starts having a huge variance, which causes its median to jump up. Unclear why, though it would be due to small delays in how Playwright controls the Streamlit tests, giving Streamlit an advantage due to fewer users being truly concurrent on average."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 10,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 25,
+    "annotation": "Same as above. Here we start seeing Streamlit-processpool starting to losing against Python-processpool. This could be due to the way the tests are run: the Streamlit server is running on the same machine as the Playwright-controlled browser with 25 tabs. With a busier machine, there are fewer CPU cycles to go around. This wouldn't happen in the real-world, though, where users have their own machines."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 10,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 50,
+    "annotation": "Same as above."
   }
 ]
