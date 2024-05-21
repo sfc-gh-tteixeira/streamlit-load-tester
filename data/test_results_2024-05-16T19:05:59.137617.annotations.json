@@ -1,73 +1,221 @@
 [
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 1,
     "sleep_time_between_multiplications": 0,
-    "annotation": "It's weird that streamlit-base is faster than python-threads. Must be an artifact of how the tests are run. My guess is that the loop where Playwright clicks on the \"Run\" button in the Streamlit app is just slow enough to make a few tasks end before new ones begin, giving streamlit-base an unfair advantage."
+    "num_users": null,
+    "annotation": "It's weird that Streamlit-base is faster than Python-threads. Must be an artifact of how the tests are run. My guess is that the loop where Playwright clicks on the \"Run\" button in the Streamlit app is just slow enough to cause a few tasks to end before new ones begin, giving Streamlit-base an unfair advantage."
   },
 
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
     "sleep_time_between_multiplications": 0,
+    "num_users": null,
     "annotation": "The fact that Streamlit's performance between 5-10 users is so good makes me think this is indeed an artifact of new tasks starting when some old ones already ended. So I think the data for 25-50 users is more representative."
   },
 
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 100,
     "sleep_time_between_multiplications": 0,
+    "num_users": null,
     "annotation": "No idea what's going on here. Why is Streamlit faster than threads? Must be due to some artifact I'm missing..."
   },
 
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 1000,
     "sleep_time_between_multiplications": 0,
+    "num_users": null,
     "annotation": "This chart looks more like what I'd expect! Plain Streamlit mostly tracks Python threading, though it's a bit slower. And Streamlit + processpool is exactly as good as Python processpool."
   },
 
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 1,
     "sleep_time_between_multiplications": 0,
+    "num_users": null,
     "annotation": "This is all over the place. I'll just call it a tie. One thing to note: my guess is the reason Streamlit+processpool does so well here is because it's at that sweet spot where each new user is finishing after the previous user, so the same process is being reused."
   },
 
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
     "sleep_time_between_multiplications": 0,
+    "num_users": null,
     "annotation": "The two processpool-based tests are basically tied here, while Streamlit base and Python threads alternate a bit -- so I'll call that a tie too."
   },
 
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 100,
     "sleep_time_between_multiplications": 0,
+    "num_users": null,
     "annotation": "Again, the two processpool-based tests are tied here, but this time Streamlit base is *faster then* Python threads. That's very unexpected."
   },
 
   {
+    "analysis_type": "timeseries",
     "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 1000,
     "sleep_time_between_multiplications": 0,
+    "num_users": null,
     "annotation": "This behaves as expected: Streamlit base matches Python threads, and Streamlit processpool matches Python processpool."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 1,
+    "annotation": "Python beats Streamlit, but in terms of absolute numbers and user perception everything is more or less equally fast: the range is 90ms vs 59ms, so differences are barely noticeable."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 2,
+    "annotation": "Streamlit-base is fastest, but this must be some artifact of how the tests are run. So let's say this is another tie. My guess is that the loop where Playwright clicks on the \"Run\" button in the Streamlit app is just slow enough (need to find the \"Run\" button) to cause a few tasks to end before new ones begin, giving streamlit-base an unfair advantage."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 5,
+    "annotation": "Streamlit-processpool matches Python-processpool, and Streamlit-base is faster than Python-threads, though probably due to the artifact mentioned earlier."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 10,
+    "annotation": "Streamlit tends to win out vs the matching Python experiment, again, I'll chalk it out to the potential testing artifact mentioned earlier."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 25,
+    "annotation": "Streamlit tends to win out vs the matching Python experiment, again, I'll chalk it out to the potential testing artifact mentioned earlier. It's also interesting to note how the variance in the Python-threads experiment is super large."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "together",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 50,
+    "annotation": "it tends to win out vs the matching Python experiment, again, I'll chalk it out to the potential testing artifact mentioned earlier. It's also interesting to note how the variance in the Python-threads experiment is super large."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "spread_out",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 1,
+    "annotation": "Python beats Streamlit, but in terms of absolute numbers and user perception everything is more or less equally fast: the range is 79ms vs 58ms, so differences are barely noticeable."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "spread_out",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 2,
+    "annotation": "Same as above."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "spread_out",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 5,
+    "annotation": "Python-threads beats Streamlit again, but not in any user-noticeable manner. Interestingly, Python-processpool has a pretty wide variance in this case."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "spread_out",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 10,
+    "annotation": "Same as above."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "spread_out",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 25,
+    "annotation": "Each Streamlit and Python pair is about the same in terms of median, the Python variance is all over the place."
+  },
+
+  {
+    "analysis_type": "shootout",
+    "user_arrival_style": "spread_out",
+    "num_stuff_to_draw": 100,
+    "computation": "multiply_numbers",
+    "num_multiplications": 1,
+    "sleep_time_between_multiplications": 0,
+    "num_users": 50,
+    "annotation": "Streamlit continues to take the lead. I still feel like this should be due to some testing artifact. So let's just say it's a tie."
   }
 ]

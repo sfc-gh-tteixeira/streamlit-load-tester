@@ -64,9 +64,11 @@ def read_annotations(experiment_filenames):
 
         for annot in experiment_annotations:
             key_tuple = AnnotationKey(
+                analysis_type=annot["analysis_type"],
                 computation=annot["computation"],
                 num_multiplications=annot["num_multiplications"],
                 num_stuff_to_draw=annot["num_stuff_to_draw"],
+                num_users=annot["num_users"],
                 sleep_time_between_multiplications=annot["sleep_time_between_multiplications"],
                 user_arrival_style=annot["user_arrival_style"],
             )
@@ -79,9 +81,11 @@ def read_annotations(experiment_filenames):
 AnnotationKey = collections.namedtuple(
     "AnnotationKey",
     [
+        "analysis_type",
         "computation",
         "num_multiplications",
         "num_stuff_to_draw",
+        "num_users",
         "sleep_time_between_multiplications",
         "user_arrival_style",
     ],
@@ -191,20 +195,22 @@ def runtime_x_users(id, comparison_mode=False):
                 for curr_computation in all_computations:
                     for curr_num_stuff_to_draw in all_num_stuff_to_draw:
                         comparison_keys.append(AnnotationKey(
+                            analysis_type="timeseries",
                             computation=curr_computation,
                             num_multiplications=curr_num_multiplications,
                             num_stuff_to_draw=curr_num_stuff_to_draw,
+                            num_users=None,
                             sleep_time_between_multiplications=selected_sleep_time,
                             user_arrival_style=selected_arrival_style,
                         ))
 
-                annots = []
+                curr_annots = []
                 for comparison_key in comparison_keys:
                     for annot in annotations[comparison_key]:
-                        annots.append(annot)
+                        curr_annots.append(annot)
 
-                if annots:
-                    st.caption("\n\n".join(annots))
+                if curr_annots:
+                    st.caption("\n\n".join(curr_annots))
 
                     ""
                     ""
@@ -253,6 +259,9 @@ def runtime_shootout(id, comparison_mode):
         (filtered_data_0.sleep_time_between_multiplications == selected_sleep_time)
     ]
 
+    all_computations = filtered_data_0.computation.unique().tolist()
+    all_num_stuff_to_draw = filtered_data_0.num_stuff_to_draw.unique().tolist()
+
     if sort_by_winner:
         sort_args = dict(sort="x")
     else:
@@ -283,7 +292,32 @@ def runtime_shootout(id, comparison_mode):
             use_container_width=True,
         )
 
-        ""
+        if not comparison_mode:
+            comparison_keys = []
+            for curr_computation in all_computations:
+                for curr_num_stuff_to_draw in all_num_stuff_to_draw:
+                    comparison_keys.append(AnnotationKey(
+                        analysis_type="shootout",
+                        computation=curr_computation,
+                        num_multiplications=selected_num_multiplications,
+                        num_stuff_to_draw=curr_num_stuff_to_draw,
+                        num_users=curr_num_users,
+                        sleep_time_between_multiplications=selected_sleep_time,
+                        user_arrival_style=selected_arrival_style,
+                    ))
+
+            curr_annots = []
+
+            for comparison_key in comparison_keys:
+                for annot in annotations[comparison_key]:
+                    curr_annots.append(annot)
+
+
+            if curr_annots:
+                st.caption("\n\n".join(curr_annots))
+
+                ""
+                ""
 
 
 _, col, _ = st.columns([1, 2, 1])
