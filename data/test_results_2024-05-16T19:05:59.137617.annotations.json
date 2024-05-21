@@ -221,7 +221,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "together",
+    "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
@@ -232,7 +232,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "together",
+    "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
@@ -243,7 +243,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "together",
+    "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
@@ -254,7 +254,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "together",
+    "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
@@ -265,7 +265,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "together",
+    "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
@@ -276,7 +276,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "together",
+    "user_arrival_style": "spread_out",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
