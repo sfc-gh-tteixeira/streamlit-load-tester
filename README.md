@@ -14,7 +14,7 @@ This repo contains two things:
 
 If you just want to look at the results of these load tests, you can find them at:
 
-https://load-tests.streamlit.app
+https://load-test.streamlit.app
 
 
 ## Running the load tests yourself
