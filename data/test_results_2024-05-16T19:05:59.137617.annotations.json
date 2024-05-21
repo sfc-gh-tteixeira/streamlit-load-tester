@@ -282,6 +282,6 @@
     "num_multiplications": 10,
     "sleep_time_between_multiplications": 0,
     "num_users": 50,
-    "annotation": "Same as above."
+    "annotation": "At 50 concurrent users and 10M multiplications per user, Python-threads and Streamlit-base lead to bad user experiences (~16s per user!). You should definitely switch to a processpool at this point."
   }
 ]
