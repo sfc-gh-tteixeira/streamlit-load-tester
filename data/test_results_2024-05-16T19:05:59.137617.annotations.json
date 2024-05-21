@@ -221,7 +221,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "spread_out",
+    "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
@@ -232,7 +232,7 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "spread_out",
+    "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
@@ -243,40 +243,40 @@
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "spread_out",
+    "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
     "sleep_time_between_multiplications": 0,
     "num_users": 5,
-    "annotation": "Same as above. And notice how the difference between threaded and processpool versions is further increasing now."
+    "annotation": "The difference between threaded and processpool versions is further increasing now."
   },
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "spread_out",
+    "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
     "sleep_time_between_multiplications": 0,
     "num_users": 10,
-    "annotation": "Same as above, though here Python-threads starts having a huge variance, which causes its median to jump up. Unclear why, though it would be due to small delays in how Playwright controls the Streamlit tests, giving Streamlit an advantage due to fewer users being truly concurrent on average."
+    "annotation": "Here, Python-threads starts having a huge variance, which causes its median to jump up. Unclear why, though it would be due to small delays in how Playwright controls the Streamlit tests, giving Streamlit an advantage due to fewer users being truly concurrent on average."
   },
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "spread_out",
+    "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
     "sleep_time_between_multiplications": 0,
     "num_users": 25,
-    "annotation": "Same as above. Here we start seeing Streamlit-processpool starting to losing against Python-processpool. This could be due to the way the tests are run: the Streamlit server is running on the same machine as the Playwright-controlled browser with 25 tabs. With a busier machine, there are fewer CPU cycles to go around. This wouldn't happen in the real-world, though, where users have their own machines."
+    "annotation": "Here we start seeing Streamlit-processpool starting to losing against Python-processpool. This could be due to the way the tests are run: the Streamlit server is running on the same machine as the Playwright-controlled browser with 25 tabs. With a busier machine, there are fewer CPU cycles to go around. This wouldn't happen in the real-world, though, where users have their own machines."
   },
 
   {
     "analysis_type": "shootout",
-    "user_arrival_style": "spread_out",
+    "user_arrival_style": "together",
     "num_stuff_to_draw": 100,
     "computation": "multiply_numbers",
     "num_multiplications": 10,
