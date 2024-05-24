@@ -2,12 +2,12 @@
 
 This repo contains two things:
 
-1. **test.py:** A load-testing script that compares Streamlit's handling of concurrent users against
-   how Python handles concurrent tasks when Streamlit is not involved. This script runs lots of
-   experiments and writes the results to `data/`.
+1. **tests-scripts/run_tests.py:** A load-testing script that compares Streamlit's handling of concurrent
+   users against how Python handles concurrent tasks when Streamlit is not involved. This script
+   runs lots of experiments and writes the results to `data/`.
 
-2. **result_browser.py:** A Streamlit app that reads the results stored in the `data/` folder and shows
-   them in an easy-to-use UI.
+2. **result-browser/streamlit_app.py:** A Streamlit app that reads the results stored in the `data/`
+   folder and shows them in an easy-to-use UI.
 
 
 ## Browsing official results
@@ -19,32 +19,44 @@ https://load-test.streamlit.app
 
 ## Running the load tests yourself
 
+1. Go to the right folder:
+
+   ```sh
+   $ cd load-tests
+   ```
+
 1. Install requirements:
 
    ```sh
    $ pip install -r requirements.txt
    ```
 
-2. Start the tests:
+1. Start the tests:
 
    ```sh
    $ python test.py
    ```
 
-3. Go fly a kite. The results will be ready in ~24-48h.
+1. Go fly a kite. The results will be ready in ~24-48h.
 
    The script from (2) will save a file of type `.rowjson` in `data/`. Those are your test results.
 
 
 ## Running the result browser app
 
-1. Install requirements if you haven't done so already:
+1. Go to the right folder:
+
+   ```sh
+   $ cd result-browser
+   ```
+
+1. Install requirements:
 
    ```sh
    $ pip install -r requirements.txt
    ```
 
-2. Start the app:
+1. Start the app:
 
    ```sh
    $ streamlit run result_browser.py
@@ -61,7 +73,7 @@ https://load-test.streamlit.app
 
 2. Then for each type of test described in item 3 below we run the task above 1-50 times concurrently
    (`num_users`).
-   
+
    Tasks are either started all at once or spread out over a 1s interval (`user_arrival_style`).
 
 4. We do this for each of 5 test types:
