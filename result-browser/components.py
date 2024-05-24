@@ -69,7 +69,7 @@ def toggle_containers(columns, gap="small", key=0):
         with col:
             containers.append(st.container(border=True))
 
-    selection = st.radio("", range(columns))
+    selection = st.radio("", range(columns), key=f"--button-container-{key}")
 
     script("""
         const radioContainer = parentNode.previousSibling
