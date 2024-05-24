@@ -26,7 +26,7 @@ def button_container(key=0):
     script("""
         const buttonContainer = parentNode.previousSibling
         const container = buttonContainer.previousSibling
-        const button = buttonContainer.querySelector("button")
+        const button = buttonContainer.querySelector(":scope button")
 
         const styles = getComputedStyle(container)
         const textColor = styles.getPropertyValue("color")
@@ -74,9 +74,10 @@ def toggle_containers(columns, gap="small", key=0):
     script("""
         const radioContainer = parentNode.previousSibling
         const columnContainer = radioContainer.previousSibling
-        const radioButtons = Array.from(
-            radioContainer.querySelectorAll("[data-baseweb=radio]"))
-        const columns = Array.from(columnContainer.children)
+        const radioButtons = Array.from(radioContainer.querySelectorAll(
+            ":scope [data-baseweb=radio]"))
+        const columns = Array.from(columnContainer.querySelectorAll(
+            ":scope [data-testid=stVerticalBlock] > [data-testid=stVerticalBlockBorderWrapper]"))
 
         const styles = getComputedStyle(columnContainer)
         const textColor = styles.getPropertyValue("color")
