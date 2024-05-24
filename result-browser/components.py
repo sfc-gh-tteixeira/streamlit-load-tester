@@ -130,8 +130,8 @@ def script(body):
         <script>
             const scriptWindow = window
             const scriptDocument = document
-            const outerWindow = window.top
-            const outerDocument = window.top.document
+            const outerWindow = window.parent
+            const outerDocument = window.parent.document
 
             const iframe = Array.from(
                 outerDocument.getElementsByTagName("iframe")
