@@ -21,7 +21,6 @@ import types
 import streamlit as st
 import pandas as pd
 
-from components import toggle_containers
 import runtime_shootout
 import runtime_vs_numusers
 import util
