@@ -28,7 +28,7 @@ import util
 
 st.set_page_config(
     page_title="Load test results browser",
-    page_icon=":heart_on_fire:",
+    page_icon=":fire:",
     layout="wide",
 )
 
@@ -36,7 +36,7 @@ _, col, _ = st.columns([1, 2, 1])
 
 with col:
     """
-    # :heart_on_fire: Load test results browser
+    # :fire: Load test results browser
     """
 
     ""
