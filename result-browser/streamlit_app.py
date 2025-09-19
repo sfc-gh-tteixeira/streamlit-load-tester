@@ -31,78 +31,84 @@ st.set_page_config(
     layout="wide",
 )
 
-_, col, _ = st.columns([1, 2, 1])
+WIDTH = 800
 
-with col:
-    """
-    # :fire: Load test results browser
-    """
+with st.container(horizontal_alignment="center"):
+    with st.container(width=WIDTH, border=True):
+        """
+        # :fire: Load test results browser
+        """
 
-    ""
+        # Get experiment files and make their names readable.
+        data_folder = pathlib.Path(__file__).parent / "../data"
+        file_paths = sorted(data_folder.glob("*.rowjson"))
+        names_to_paths = {f.name: f for f in file_paths}
+        file_names = list(names_to_paths.keys())
 
-    # Get experiment files and make their names readable.
-    data_folder = pathlib.Path(__file__).parent / "../data"
-    file_paths = sorted(data_folder.glob("*.rowjson"))
-    names_to_paths = {f.name: f for f in file_paths}
-    file_names = list(names_to_paths.keys())
+        if len(file_names) > 1:
+            selected_file_names = st.multiselect(
+                "Result files", file_names, default=file_names[-1]
+            )
+        else:
+            selected_file_names = file_names
 
-    selected_file_names = st.multiselect(
-        "Result files", file_names, default=file_names[-1]
-    )
-    selected_file_paths = [data_folder / f for f in selected_file_names]
+        selected_file_paths = [data_folder / f for f in selected_file_names]
 
-    data = None
+        data = None
 
-    if selected_file_paths:
-        experiments = util.read_data(selected_file_paths)
+        if selected_file_paths:
+            experiments = util.read_data(selected_file_paths)
 
-        data = types.SimpleNamespace(
-            experiments=experiments,
-            annotations=util.read_annotations(selected_file_paths),
-            all_num_users=experiments.num_users.unique().tolist(),
-            all_experiment_names=experiments.experiment_name.unique().tolist(),
-            all_num_multiplications=experiments.num_multiplications.unique().tolist(),
-            all_sleep_times=experiments.sleep_time_between_multiplications.unique().tolist(),
-            all_arrival_styles=experiments.user_arrival_style.unique().tolist(),
-        )
+            data = types.SimpleNamespace(
+                experiments=experiments,
+                annotations=util.read_annotations(selected_file_paths),
+                all_num_users=experiments.num_users.unique().tolist(),
+                all_experiment_names=experiments.experiment_name.unique().tolist(),
+                all_num_multiplications=experiments.num_multiplications.unique().tolist(),
+                all_sleep_times=experiments.sleep_time_between_multiplications.unique().tolist(),
+                all_arrival_styles=experiments.user_arrival_style.unique().tolist(),
+            )
 
-    ""
+        ""
 
-    if "analysis_type" not in st.session_state:
-        st.session_state.analysis_type = None
+        if "analysis_type" not in st.session_state:
+            st.session_state.analysis_type = None
 
-    ANALYSIS_OPTIONS = {
-        ":gun: Shootout": runtime_shootout,
-        ":chart_with_upwards_trend: Time series": runtime_vs_numusers,
-    }
+        ANALYSIS_OPTIONS = {
+            ":gun: Shootout": runtime_shootout,
+            ":chart_with_upwards_trend: Time series": runtime_vs_numusers,
+        }
 
-    selection = st.pills(
-        "Analysis type",
-        options=ANALYSIS_OPTIONS.keys(),
-        default=list(ANALYSIS_OPTIONS.keys())[0],
-    )
+        with st.container(
+            horizontal=True,
+            horizontal_alignment="distribute",
+            vertical_alignment="bottom",
+        ):
+            selection = st.pills(
+                "Analysis type",
+                options=ANALYSIS_OPTIONS.keys(),
+                default=list(ANALYSIS_OPTIONS.keys())[0],
+            )
 
-    st.session_state.analysis_type = ANALYSIS_OPTIONS[selection].draw
+            comparison_mode = st.toggle("Turn on comparison mode")
+
+        if not selection:
+            st.stop()
+
+        st.session_state.analysis_type = ANALYSIS_OPTIONS[selection].draw
 
     if st.session_state.analysis_type:
-        comparison_mode = st.toggle("Turn on comparison mode")
-    ""
+        ""
+        ""
 
+        if comparison_mode:
+            cols = st.columns(2)
 
-if st.session_state.analysis_type:
-    ""
-    ""
+            with cols[0]:
+                st.session_state.analysis_type(data, comparison_mode, key=0)
 
-    if comparison_mode:
-        cols = st.columns(2)
-
-        with cols[0]:
-            st.session_state.analysis_type(data, comparison_mode, key=0)
-
-        with cols[1]:
-            st.session_state.analysis_type(data, comparison_mode, key=1)
-    else:
-        _, col, _ = st.columns([1, 2, 1])
-
-        with col:
-            st.session_state.analysis_type(data, comparison_mode, key=0)
+            with cols[1]:
+                st.session_state.analysis_type(data, comparison_mode, key=1)
+        else:
+            with st.container(width=WIDTH):
+                st.session_state.analysis_type(data, comparison_mode, key=0)

@@ -21,41 +21,49 @@ import util
 def draw(data, comparison_mode, key):
     """Shows line charts of runtime vs num users, with many controls."""
 
-    filtered_experiment_names = st.multiselect(
+    filtered_experiment_names = st.pills(
         "Experiment types to include",
         sorted(data.all_experiment_names),
         default=data.all_experiment_names,
+        selection_mode="multi",
         key=f"names-{key}",
     )
 
-    selected_arrival_style = st.radio(
+    options = sorted(data.all_arrival_styles, reverse=True)
+    selected_arrival_style = st.segmented_control(
         "How do users arrive",
-        sorted(data.all_arrival_styles, reverse=True),
-        horizontal=True,
+        options,
+        default=options[0],
         key=f"style-{key}",
     )
 
-    selected_sleep_time = st.radio(
+    options = sorted(data.all_sleep_times)
+    selected_sleep_time = st.segmented_control(
         "Sleep time between every million multiplications (seconds)",
-        sorted(data.all_sleep_times),
-        horizontal=True,
+        options,
+        default=options[0],
         key=f"sleep-{key}",
     )
-
-    st.write("")
-    st.write("")
 
     normalize_run_times = st.toggle(
         "Normalize run times to fastest",
         key=f"normalize-{key}",
     )
 
+    if (
+        not filtered_experiment_names
+        or selected_arrival_style is None
+        or selected_sleep_time is None
+    ):
+        st.warning("Please select your options above.")
+        st.stop()
+
     if data is not None:
         exper = data.experiments
         filtered_exper_0 = exper[
-            (exper.experiment_name.isin(filtered_experiment_names)) &
-            (exper.user_arrival_style == selected_arrival_style) &
-            (exper.sleep_time_between_multiplications == selected_sleep_time)
+            (exper.experiment_name.isin(filtered_experiment_names))
+            & (exper.user_arrival_style == selected_arrival_style)
+            & (exper.sleep_time_between_multiplications == selected_sleep_time)
         ]
 
         run_time_units = "s"
@@ -72,7 +80,8 @@ def draw(data, comparison_mode, key):
 
         for curr_num_multiplications in data.all_num_multiplications:
             filtered_exper_1 = filtered_exper_0[
-                filtered_exper_0.num_multiplications == curr_num_multiplications]
+                filtered_exper_0.num_multiplications == curr_num_multiplications
+            ]
 
             st.write(f"""
                 #### {curr_num_multiplications}M multiplications
@@ -90,7 +99,10 @@ def draw(data, comparison_mode, key):
                 height=300,
             ).encode(
                 x=alt.X("num_users:Q", title="Number of users"),
-                y=alt.Y("median(session_run_time):Q", title=f"Session run time ({run_time_units})"),
+                y=alt.Y(
+                    "median(session_run_time):Q",
+                    title=f"Session run time ({run_time_units})",
+                ),
                 color=alt.Color(
                     "experiment_name:N",
                     title="Experiment name",
@@ -109,33 +121,40 @@ def draw(data, comparison_mode, key):
                 c.mark_point(size=50, filled=True).encode(
                     y=alt.Y("session_run_time:Q"),
                     opacity=alt.condition(selection, alt.value(0.125), alt.value(0.0)),
-                ) +
-
+                )
+                +
                 # Lines going through the median points.
-                c.mark_line(strokeWidth=2).encode(
+                c.mark_line(strokeWidth=2)
+                .encode(
                     opacity=alt.condition(selection, alt.value(1.0), alt.value(0.0)),
-                ).add_selection(selection) +
-
+                )
+                .add_selection(selection)
+                +
                 # Points on top of the lines, showing the median.
                 c.mark_point(size=50, filled=True).encode(
-                    shape=alt.Shape("experiment_name:N", title="Experiment name", legend=None),
+                    shape=alt.Shape(
+                        "experiment_name:N", title="Experiment name", legend=None
+                    ),
                     opacity=alt.condition(selection, alt.value(1.0), alt.value(0.0)),
                 ),
-            use_container_width=True)
+                use_container_width=True,
+            )
 
             if not comparison_mode:
                 comparison_keys = []
                 for curr_computation in all_computations:
                     for curr_num_stuff_to_draw in all_num_stuff_to_draw:
-                        comparison_keys.append(util.AnnotationKey(
-                            analysis_type="timeseries",
-                            computation=curr_computation,
-                            num_multiplications=curr_num_multiplications,
-                            num_stuff_to_draw=curr_num_stuff_to_draw,
-                            num_users=None,
-                            sleep_time_between_multiplications=selected_sleep_time,
-                            user_arrival_style=selected_arrival_style,
-                        ))
+                        comparison_keys.append(
+                            util.AnnotationKey(
+                                analysis_type="timeseries",
+                                computation=curr_computation,
+                                num_multiplications=curr_num_multiplications,
+                                num_stuff_to_draw=curr_num_stuff_to_draw,
+                                num_users=None,
+                                sleep_time_between_multiplications=selected_sleep_time,
+                                user_arrival_style=selected_arrival_style,
+                            )
+                        )
 
                 curr_annots = []
                 for comparison_key in comparison_keys:

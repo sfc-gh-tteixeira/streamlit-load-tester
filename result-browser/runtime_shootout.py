@@ -21,29 +21,29 @@ import util
 def draw(data, comparison_mode, key):
     """Shows runtime bar charts, with many controls."""
 
-    selected_num_multiplications = st.radio(
+    options = sorted(data.all_num_multiplications)
+    selected_num_multiplications = st.segmented_control(
         "Number of multiplications, in millions (i.e. how complex are your app's calculations?)",
-        sorted(data.all_num_multiplications),
-        horizontal=True,
+        options,
+        default=options[0],
         key=f"mult-{key}",
     )
 
-    selected_arrival_style = st.radio(
+    options = sorted(data.all_arrival_styles, reverse=True)
+    selected_arrival_style = st.segmented_control(
         "How do users arrive",
-        sorted(data.all_arrival_styles, reverse=True),
-        horizontal=True,
+        options,
+        default=options[0],
         key=f"style-{key}",
     )
 
-    selected_sleep_time = st.radio(
+    options = sorted(data.all_sleep_times)
+    selected_sleep_time = st.segmented_control(
         "Sleep time between every million multiplications (seconds)",
-        sorted(data.all_sleep_times),
-        horizontal=True,
+        options,
+        default=options[0],
         key=f"sleep-{key}",
     )
-
-    st.write("")
-    st.write("")
 
     sort_by_winner = st.toggle(
         "Sort by winner",
@@ -51,15 +51,23 @@ def draw(data, comparison_mode, key):
         key=f"sort-{key}",
     )
 
+    if (
+        selected_num_multiplications is None
+        or selected_arrival_style is None
+        or selected_sleep_time is None
+    ):
+        st.warning("Please select your options above.")
+        st.stop()
+
     st.write("")
     st.write("")
 
     filtered_exper_0 = data.experiments
 
     filtered_exper_0 = filtered_exper_0[
-        (filtered_exper_0.num_multiplications == selected_num_multiplications) &
-        (filtered_exper_0.user_arrival_style == selected_arrival_style) &
-        (filtered_exper_0.sleep_time_between_multiplications == selected_sleep_time)
+        (filtered_exper_0.num_multiplications == selected_num_multiplications)
+        & (filtered_exper_0.user_arrival_style == selected_arrival_style)
+        & (filtered_exper_0.sleep_time_between_multiplications == selected_sleep_time)
     ]
 
     all_computations = filtered_exper_0.computation.unique().tolist()
@@ -72,12 +80,14 @@ def draw(data, comparison_mode, key):
 
     for curr_num_users in data.all_num_users:
         st.write(f"""
-            #### {curr_num_users} concurrent user{ 's' if curr_num_users > 1 else '' }
+            #### {curr_num_users} concurrent user{"s" if curr_num_users > 1 else ""}
         """)
 
         st.write("")
 
-        filtered_exper_1 = filtered_exper_0[filtered_exper_0.num_users == curr_num_users]
+        filtered_exper_1 = filtered_exper_0[
+            filtered_exper_0.num_users == curr_num_users
+        ]
 
         c = alt.Chart(
             filtered_exper_1,
@@ -87,7 +97,8 @@ def draw(data, comparison_mode, key):
                 "experiment_name:N",
                 title="Experiment name",
                 axis=alt.Axis(title=None),
-                **sort_args),
+                **sort_args,
+            ),
             color=alt.Color(
                 "experiment_name:N",
                 title="Experiment name",
@@ -98,9 +109,8 @@ def draw(data, comparison_mode, key):
         st.altair_chart(
             c.mark_bar(opacity=0.667).encode(
                 alt.X("median(session_run_time):Q", title="Median run time (s)"),
-            ) +
-
-            c.mark_point(size=20, filled=True, opacity=0.5).encode(
+            )
+            + c.mark_point(size=20, filled=True, opacity=0.5).encode(
                 alt.X("session_run_time:Q"),
                 alt.YOffset("user_index:Q"),
             ),
@@ -111,15 +121,17 @@ def draw(data, comparison_mode, key):
             comparison_keys = []
             for curr_computation in all_computations:
                 for curr_num_stuff_to_draw in all_num_stuff_to_draw:
-                    comparison_keys.append(util.AnnotationKey(
-                        analysis_type="shootout",
-                        computation=curr_computation,
-                        num_multiplications=selected_num_multiplications,
-                        num_stuff_to_draw=curr_num_stuff_to_draw,
-                        num_users=curr_num_users,
-                        sleep_time_between_multiplications=selected_sleep_time,
-                        user_arrival_style=selected_arrival_style,
-                    ))
+                    comparison_keys.append(
+                        util.AnnotationKey(
+                            analysis_type="shootout",
+                            computation=curr_computation,
+                            num_multiplications=selected_num_multiplications,
+                            num_stuff_to_draw=curr_num_stuff_to_draw,
+                            num_users=curr_num_users,
+                            sleep_time_between_multiplications=selected_sleep_time,
+                            user_arrival_style=selected_arrival_style,
+                        )
+                    )
 
             curr_annots = []
 
@@ -127,11 +139,8 @@ def draw(data, comparison_mode, key):
                 for annot in data.annotations[comparison_key]:
                     curr_annots.append(annot)
 
-
             if curr_annots:
                 st.caption("\n\n".join(curr_annots))
 
                 st.write("")
                 st.write("")
-
-
