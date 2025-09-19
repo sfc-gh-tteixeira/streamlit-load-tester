@@ -47,7 +47,9 @@ with col:
     names_to_paths = {f.name: f for f in file_paths}
     file_names = list(names_to_paths.keys())
 
-    selected_file_names = st.multiselect("Result files", file_names, default=file_names[-1])
+    selected_file_names = st.multiselect(
+        "Result files", file_names, default=file_names[-1]
+    )
     selected_file_paths = [data_folder / f for f in selected_file_names]
 
     data = None
@@ -67,28 +69,21 @@ with col:
 
     ""
 
-    """
-    #### Analysis type
-    """
-
     if "analysis_type" not in st.session_state:
         st.session_state.analysis_type = None
 
-    cols, selection = toggle_containers(2)
+    ANALYSIS_OPTIONS = {
+        ":gun: Shootout": runtime_shootout,
+        ":chart_with_upwards_trend: Time series": runtime_vs_numusers,
+    }
 
-    with cols[0]:
-        "##### :gun: Shootout"
-        st.caption("Quickly see winners and losers.")
+    selection = st.pills(
+        "Analysis type",
+        options=ANALYSIS_OPTIONS.keys(),
+        default=list(ANALYSIS_OPTIONS.keys())[0],
+    )
 
-        if selection == 0:
-            st.session_state.analysis_type = runtime_shootout.draw
-
-    with cols[1]:
-        "##### :chart_with_upwards_trend: Time series"
-        st.caption("Look at the data in more detail.")
-
-        if selection == 1:
-            st.session_state.analysis_type = runtime_vs_numusers.draw
+    st.session_state.analysis_type = ANALYSIS_OPTIONS[selection].draw
 
     if st.session_state.analysis_type:
         comparison_mode = st.toggle("Turn on comparison mode")
